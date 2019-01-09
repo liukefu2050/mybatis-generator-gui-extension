@@ -34,6 +34,7 @@
         <ojdbc6.version>12.1.0.1-atlassian-hosted</ojdbc6.version>
         <postgresql.version>42.2.1</postgresql.version>
         <mssql-jdbc.version>6.2.2.jre8</mssql-jdbc.version>
+        <NBT.WFW.Version>0.0.1</NBT.WFW.Version>
     </properties>
 
     <repositories>
@@ -191,7 +192,11 @@
             <version>${mssql-jdbc.version}</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>nbt.wfw</groupId>
+            <artifactId>nbt-wfw-core</artifactId>
+            <version>${NBT.WFW.Version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

@@ -69,7 +69,7 @@ public class ProjectConfig {
     public SimpleStringProperty mapperDir = new SimpleStringProperty("src/main/resources");
     @Config(bundle = "project.mapperPackage", type = ConfigType.TextField)
     @ExportToPlugin(plugin = DeclaredPlugins.SCVXGeneratorPlugin)
-    public SimpleStringProperty mapperPackage = new SimpleStringProperty("mapper");
+    public SimpleStringProperty mapperPackage = new SimpleStringProperty("amy.db.mysql.mps");
     @ExportToPlugin(plugin = DeclaredPlugins.SCVXGeneratorPlugin)
     @Config(bundle = "project.daoDir", type = ConfigType.TextField)
     public SimpleStringProperty daoDir = new SimpleStringProperty("src/main/java");
@@ -123,7 +123,7 @@ public class ProjectConfig {
     @ExportToTab(tabName = DATA_ACCESS_OBJECT, index = 1)
     @EnablePlugin(DeclaredPlugins.CaseInsensitiveLikePlugin)
     @Config(bundle = "project.enableCaseInsensitiveLikePlugin", type = ConfigType.CheckBox)
-    public SimpleBooleanProperty enableCaseInsensitiveLikePlugin = new SimpleBooleanProperty(true);
+    public SimpleBooleanProperty enableCaseInsensitiveLikePlugin = new SimpleBooleanProperty(false);
 
     @ExportToTab(tabName = DATA_ACCESS_OBJECT, index = 1)
     @EnablePlugin(DeclaredPlugins.ExampleEnhancedPlugin)
@@ -205,7 +205,7 @@ public class ProjectConfig {
     @Config(bundle = "project.exampleObjName", type = ConfigType.TextField)
     public SimpleStringProperty exampleObjName = new SimpleStringProperty("");
     @Config(bundle = "project.entityRootClass", type = ConfigType.CheckableTextField)
-    public SimpleStringProperty entityRootClass = new SimpleStringProperty("");
+    public SimpleStringProperty entityRootClass = new SimpleStringProperty("nbt.wfw.core.vo.BizBasicVO");
     @ExportToPlugin(plugin = DeclaredPlugins.SCVXGeneratorPlugin)
     @Config(bundle = "project.primaryKey", type = ConfigType.CheckableTextField)
     public SimpleStringProperty primaryKey = new SimpleStringProperty("");
@@ -224,7 +224,7 @@ public class ProjectConfig {
     @Config(bundle = "project.trimStrings", type = ConfigType.CheckBox)
     public SimpleBooleanProperty trimStrings = new SimpleBooleanProperty(false);
     @Config(bundle = "project.useActualColumnNames", type = ConfigType.CheckBox)
-    public SimpleBooleanProperty useActualColumnNames = new SimpleBooleanProperty(false);
+    public SimpleBooleanProperty useActualColumnNames = new SimpleBooleanProperty(true);
 
     @ExportToTab(tabName = DOMAIN_OBJECT, index = 1)
     @EnablePlugin(DeclaredPlugins.FluentBuilderMethodsPlugin)
@@ -232,16 +232,16 @@ public class ProjectConfig {
     public SimpleBooleanProperty enableFluentBuilderMethodsPlugin = new SimpleBooleanProperty(true);
     @EnablePlugin(DeclaredPlugins.ToStringPlugin)
     @Config(bundle = "project.generateToString", type = ConfigType.CheckBox)
-    public SimpleBooleanProperty generateToString = new SimpleBooleanProperty(true);
+    public SimpleBooleanProperty generateToString = new SimpleBooleanProperty(false);
     @ExportToPlugin(plugin = DeclaredPlugins.ToStringPlugin, key = "useToStringFromRoot")
     @AdvancedConfig
     @Config(bundle = "project.useToStringFromRoot", type = ConfigType.CheckBox)
-    public SimpleBooleanProperty useToStringFromRoot = new SimpleBooleanProperty(false);
+    public SimpleBooleanProperty useToStringFromRoot = new SimpleBooleanProperty(true);
 
 
     @EnablePlugin(DeclaredPlugins.EqualsHashCodePlugin)
     @Config(bundle = "project.generateHashcodeEquals", type = ConfigType.CheckBox)
-    public SimpleBooleanProperty generateHashcodeEquals = new SimpleBooleanProperty(true);
+    public SimpleBooleanProperty generateHashcodeEquals = new SimpleBooleanProperty(false);
 
     @AdvancedConfig
     @ExportToPlugin(plugin = DeclaredPlugins.EqualsHashCodePlugin, key = "useEqualsHashCodeFromRoot")
@@ -256,10 +256,10 @@ public class ProjectConfig {
 
     @ExportToTab(tabName = tabs.COMMENT)
     @Config(bundle = "project.enableComment", type = ConfigType.CheckBox)
-    public BooleanProperty enableComment = new SimpleBooleanProperty(true);
+    public BooleanProperty enableComment = new SimpleBooleanProperty(false);
     @ExportToPlugin(plugin = DeclaredPlugins.CommentPlugin)
     @Config(bundle = "project.enableMbgGenerated", type = ConfigType.CheckBox)
-    public BooleanProperty enableMbgGenerated = new SimpleBooleanProperty(true);
+    public BooleanProperty enableMbgGenerated = new SimpleBooleanProperty(false);
     @ExportToPlugin(plugin = DeclaredPlugins.CommentPlugin)
     @Config(bundle = "project.enableCorrespondingTable", type = ConfigType.CheckBox)
     public BooleanProperty enableCorrespondingTable = new SimpleBooleanProperty(false);
