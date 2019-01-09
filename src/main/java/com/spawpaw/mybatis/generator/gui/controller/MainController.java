@@ -57,6 +57,7 @@ public class MainController extends BaseController implements Initializable {
             }
         });
         cb_select_language.setTooltip(new Tooltip("you can change the launch language in `GeneratorGuiRunner.class`"));
+        btn_about.setVisible(false);
         btn_about.setOnMouseClicked(event -> aboutStage.showAndWait());
     }
 

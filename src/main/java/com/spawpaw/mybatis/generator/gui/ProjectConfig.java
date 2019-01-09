@@ -41,7 +41,7 @@ public class ProjectConfig {
     public SimpleStringProperty reduceTablePrefix = new SimpleStringProperty("");
     @AdvancedConfig
     @Config(bundle = "project.daoObjSuffix")
-    public SimpleStringProperty daoObjSuffix = new SimpleStringProperty("Mapper");
+    public SimpleStringProperty daoObjSuffix = new SimpleStringProperty("Dao");
     @AdvancedConfig
     @Config(bundle = "project.daoPackageSuffix")
     public SimpleStringProperty daoPackageSuffix = new SimpleStringProperty("dao");
@@ -50,10 +50,10 @@ public class ProjectConfig {
     public SimpleStringProperty entityObjSuffix = new SimpleStringProperty("");
     @AdvancedConfig
     @Config(bundle = "project.exampleObjSuffix")
-    public SimpleStringProperty exampleObjSuffix = new SimpleStringProperty("Example");
+    public SimpleStringProperty exampleObjSuffix = new SimpleStringProperty("BizVo");
     @AdvancedConfig
     @Config(bundle = "project.entityPackageSuffix")
-    public SimpleStringProperty entityPackageSuffix = new SimpleStringProperty("entity");
+    public SimpleStringProperty entityPackageSuffix = new SimpleStringProperty("vo");
     @ExportToTab(tabName = SHORTCUT, index = 10)
     @ExportToTab(tabName = tabs.BASIC_SETTINGS, index = 1)
     @Config(bundle = "project.overwrite", type = ConfigType.CheckBox)
@@ -157,7 +157,7 @@ public class ProjectConfig {
     public SimpleBooleanProperty enableSelectByPrimaryKey = new SimpleBooleanProperty(true);
     @AdvancedConfig
     @Config(bundle = "project.enableSelectByExample", type = ConfigType.CheckBox)
-    public SimpleBooleanProperty enableSelectByExample = new SimpleBooleanProperty(true);
+    public SimpleBooleanProperty enableSelectByExample = new SimpleBooleanProperty(false);
     @AdvancedConfig
     @Config(bundle = "project.enableUpdateByPrimaryKey", type = ConfigType.CheckBox)
     public SimpleBooleanProperty enableUpdateByPrimaryKey = new SimpleBooleanProperty(true);
@@ -166,13 +166,13 @@ public class ProjectConfig {
     public SimpleBooleanProperty enableDeleteByPrimaryKey = new SimpleBooleanProperty(true);
     @AdvancedConfig
     @Config(bundle = "project.enableDeleteByExample", type = ConfigType.CheckBox)
-    public SimpleBooleanProperty enableDeleteByExample = new SimpleBooleanProperty(true);
+    public SimpleBooleanProperty enableDeleteByExample = new SimpleBooleanProperty(false);
     @AdvancedConfig
     @Config(bundle = "project.enableCountByExample", type = ConfigType.CheckBox)
-    public SimpleBooleanProperty enableCountByExample = new SimpleBooleanProperty(true);
+    public SimpleBooleanProperty enableCountByExample = new SimpleBooleanProperty(false);
     @AdvancedConfig
     @Config(bundle = "project.enableUpdateByExample", type = ConfigType.CheckBox)
-    public SimpleBooleanProperty enableUpdateByExample = new SimpleBooleanProperty(true);
+    public SimpleBooleanProperty enableUpdateByExample = new SimpleBooleanProperty(false);
     @AdvancedConfig
     @Config(bundle = "project.selectByPrimaryKeyQueryId", type = ConfigType.CheckableTextField)
     public SimpleStringProperty selectByPrimaryKeyQueryId = new SimpleStringProperty("");
@@ -190,7 +190,7 @@ public class ProjectConfig {
     public SimpleStringProperty entityDir = new SimpleStringProperty("src/main/java");
     @ExportToPlugin(plugin = DeclaredPlugins.SCVXGeneratorPlugin)
     @Config(bundle = "project.entityPackage", type = ConfigType.TextField)
-    public SimpleStringProperty entityPackage = new SimpleStringProperty("entity");
+    public SimpleStringProperty entityPackage = new SimpleStringProperty("vo");
     @ExportToTab(tabName = DOMAIN_OBJECT, index = 1)
     @ExportToTab(tabName = SHORTCUT, index = 1)
     @ExportToPlugin(plugin = DeclaredPlugins.SCVXGeneratorPlugin)
@@ -224,7 +224,7 @@ public class ProjectConfig {
     @Config(bundle = "project.trimStrings", type = ConfigType.CheckBox)
     public SimpleBooleanProperty trimStrings = new SimpleBooleanProperty(false);
     @Config(bundle = "project.useActualColumnNames", type = ConfigType.CheckBox)
-    public SimpleBooleanProperty useActualColumnNames = new SimpleBooleanProperty(true);
+    public SimpleBooleanProperty useActualColumnNames = new SimpleBooleanProperty(false);
 
     @ExportToTab(tabName = DOMAIN_OBJECT, index = 1)
     @EnablePlugin(DeclaredPlugins.FluentBuilderMethodsPlugin)

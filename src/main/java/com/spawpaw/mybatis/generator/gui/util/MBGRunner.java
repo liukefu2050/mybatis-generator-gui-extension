@@ -111,7 +111,7 @@ public class MBGRunner {
         javaModelGeneratorConfiguration.setTargetPackage(projectConfig.entityPackage.getValue().replace(" ", ""));
         javaModelGeneratorConfiguration.setTargetProject(projectDir() + projectConfig.entityDir.getValue());
         javaModelGeneratorConfiguration.addProperty("enableSubPackages", "true");
-        javaModelGeneratorConfiguration.addProperty("useActualColumnNames", projectConfig.useActualColumnNames.getValue().toString());
+        javaModelGeneratorConfiguration.addProperty("useActualColumnNames", "false");
         javaModelGeneratorConfiguration.addProperty("trimStrings", projectConfig.trimStrings.getValue().toString());
         if (!projectConfig.entityRootClass.getValue().isEmpty())
             javaModelGeneratorConfiguration.addProperty("rootClass", projectConfig.entityRootClass.getValue());
@@ -121,7 +121,7 @@ public class MBGRunner {
         SqlMapGeneratorConfiguration sqlMapGeneratorConfiguration = new SqlMapGeneratorConfiguration();
         sqlMapGeneratorConfiguration.setTargetProject(projectDir() + projectConfig.mapperDir.getValue());
         sqlMapGeneratorConfiguration.setTargetPackage(projectConfig.mapperPackage.getValue());
-        sqlMapGeneratorConfiguration.addProperty("useActualColumnNames", projectConfig.useActualColumnNames.getValue().toString());
+        sqlMapGeneratorConfiguration.addProperty("useActualColumnNames", "true");
         sqlMapGeneratorConfiguration.addProperty("enableSubPackages", "true");
         context.setSqlMapGeneratorConfiguration(sqlMapGeneratorConfiguration);
 
@@ -130,7 +130,7 @@ public class MBGRunner {
         javaClientGeneratorConfiguration.setConfigurationType(projectConfig.javaClientMapperType.getValue());
         javaClientGeneratorConfiguration.setTargetProject(projectDir() + projectConfig.daoDir.getValue());
         javaClientGeneratorConfiguration.setTargetPackage(projectConfig.daoPackage.getValue());
-        sqlMapGeneratorConfiguration.addProperty("useActualColumnNames", projectConfig.useActualColumnNames.getValue().toString());
+        sqlMapGeneratorConfiguration.addProperty("useActualColumnNames", "true");
         sqlMapGeneratorConfiguration.addProperty("enableSubPackages", "true");
         context.setJavaClientGeneratorConfiguration(javaClientGeneratorConfiguration);
 
@@ -154,7 +154,7 @@ public class MBGRunner {
         tableConfiguration.setDeleteByPrimaryKeyStatementEnabled(projectConfig.enableDeleteByPrimaryKey.getValue());
         tableConfiguration.setDeleteByExampleStatementEnabled(projectConfig.enableDeleteByExample.getValue());
         tableConfiguration.setCountByExampleStatementEnabled(projectConfig.enableCountByExample.getValue());
-        tableConfiguration.addProperty("useActualColumnNames", projectConfig.useActualColumnNames.getValue().toString());//使用小骆驼峰替代原列名
+        tableConfiguration.addProperty("useActualColumnNames", "true");//使用小骆驼峰替代原列名
         tableConfiguration.addProperty("ignoreQualifiersAtRuntime", "true");//使用小骆驼峰替代原列名
 
         if (!projectConfig.enableVirtualPrimaryKeyPlugin.getValue().isEmpty())
