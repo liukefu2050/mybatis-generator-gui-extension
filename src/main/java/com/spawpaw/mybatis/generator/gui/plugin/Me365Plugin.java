@@ -101,7 +101,7 @@ public class Me365Plugin extends BasePlugin {
         // 4. countByCondition
         XmlElement countByConditionEle = new XmlElement("select");
         countByConditionEle.addAttribute(new Attribute("parameterType", "java.lang.String"));
-        countByConditionEle.addAttribute(new Attribute("id", "selectMapsByCondition"));
+        countByConditionEle.addAttribute(new Attribute("id", "countByCondition"));
         // 参数类型
         countByConditionEle.addAttribute(new Attribute("resultType", "int"));
         // 添加注释(!!!必须添加注释，overwrite覆盖生成时，@see XmlFileMergerJaxp.isGeneratedNode会去判断注释中是否存在OLD_ELEMENT_TAGS中的一点，例子：@mbg.generated)
