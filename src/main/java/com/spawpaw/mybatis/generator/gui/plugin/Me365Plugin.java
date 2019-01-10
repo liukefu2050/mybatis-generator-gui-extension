@@ -4,8 +4,10 @@ package com.spawpaw.mybatis.generator.gui.plugin;
 import com.itfsw.mybatis.generator.plugins.utils.BasePlugin;
 import com.itfsw.mybatis.generator.plugins.utils.XmlElementGeneratorTools;
 import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.dom.xml.*;
-import org.mybatis.generator.codegen.mybatis3.ListUtilities;
+import org.mybatis.generator.api.dom.xml.Attribute;
+import org.mybatis.generator.api.dom.xml.Document;
+import org.mybatis.generator.api.dom.xml.TextElement;
+import org.mybatis.generator.api.dom.xml.XmlElement;
 
 import java.util.List;
 
