@@ -141,6 +141,13 @@ public class ProjectConfig {
     @Config(bundle = "project.enableBatchInsertPlugin", type = ConfigType.CheckBox)
     public SimpleBooleanProperty enableBatchInsertPlugin = new SimpleBooleanProperty(false);
 
+
+    @ExportToTab(tabName = DATA_ACCESS_OBJECT, index = 1)
+    @ExportToTab(tabName = SHORTCUT, index = 3)
+    @EnablePlugin(DeclaredPlugins.Me365Plugin)
+    @Config(bundle = "project.enableMe365Plugin", type = ConfigType.CheckBox)
+    public SimpleBooleanProperty enableMe365Plugin = new SimpleBooleanProperty(true);
+
     @AdvancedConfig
     @ExportToTab(tabName = DATA_ACCESS_OBJECT, index = 1)
     @ExportToTab(tabName = SHORTCUT, index = 1)
@@ -184,7 +191,7 @@ public class ProjectConfig {
     /****Entity层配置***************************************************************************************************/
     @ExportToTab(tabName = DOMAIN_OBJECT, index = 1)
     @Config(bundle = "project.defaultModelType", type = ConfigType.ChoiceBox, testRegex = "conditional|flat|hierarchical")
-    public StringProperty defaultModelType = new SimpleStringProperty("conditional");
+    public StringProperty defaultModelType = new SimpleStringProperty("hierarchical");
     @ExportToPlugin(plugin = DeclaredPlugins.SCVXGeneratorPlugin)
     @Config(bundle = "project.entityDir", type = ConfigType.TextField)
     public SimpleStringProperty entityDir = new SimpleStringProperty("src/main/java");

@@ -53,7 +53,7 @@ public class MBGRunner {
         else context = new Context(ModelType.HIERARCHICAL);
 
         context.setId("mybatis generator gui extension");//id
-        context.setTargetRuntime("MyBatis3");//targetRuntime
+        context.setTargetRuntime("MyBatis3");//targetRuntime MyBatis3  MyBatis3Simple
         context.addProperty("javaFileEncoding", projectConfig.javaFileEncoding.getValue());
 
         //=====================================================================================================加载插件
