@@ -1,19 +1,13 @@
 
 package com.spawpaw.mybatis.generator.gui.plugin;
 
-import com.itfsw.mybatis.generator.plugins.ModelColumnPlugin;
-import com.itfsw.mybatis.generator.plugins.utils.*;
-import org.mybatis.generator.api.IntrospectedColumn;
+import com.itfsw.mybatis.generator.plugins.utils.BasePlugin;
+import com.itfsw.mybatis.generator.plugins.utils.XmlElementGeneratorTools;
 import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.api.dom.xml.*;
 import org.mybatis.generator.codegen.mybatis3.ListUtilities;
-import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
-import org.mybatis.generator.internal.util.StringUtility;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * ---------------------------------------------------------------------------
@@ -21,10 +15,6 @@ import java.util.Properties;
  * ---------------------------------------------------------------------------
  */
 public class Me365Plugin extends BasePlugin {
-    public static final String METHOD_BATCH_INSERT = "batchInsert";  // 方法名
-    public static final String METHOD_BATCH_INSERT_SELECTIVE = "batchInsertSelective";  // 方法名
-    public static final String PRO_ALLOW_MULTI_QUERIES = "allowMultiQueries";   // property allowMultiQueries
-    private boolean allowMultiQueries = false;  // 是否允许多sql提交
 
     /**
      * {@inheritDoc}
@@ -44,49 +34,6 @@ public class Me365Plugin extends BasePlugin {
         return super.validate(warnings);
     }
 
-
-    /**
-     * Java Client Methods 生成
-     * 具体执行顺序 http://www.mybatis.org/generator/reference/pluggingIn.html
-     * @param interfaze
-     * @param topLevelClass
-     * @param introspectedTable
-     * @return
-     */
-    @Override
-    public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-        // 1. batchInsert
-        FullyQualifiedJavaType listType = FullyQualifiedJavaType.getNewListInstance();
-        listType.addTypeArgument(introspectedTable.getRules().calculateAllFieldsClass());
-        Method mBatchInsert = JavaElementGeneratorTools.generateMethod(
-                METHOD_BATCH_INSERT,
-                JavaVisibility.DEFAULT,
-                FullyQualifiedJavaType.getIntInstance(),
-                new Parameter(listType, "list", "@Param(\"list\")")
-
-        );
-        commentGenerator.addGeneralMethodComment(mBatchInsert, introspectedTable);
-        // interface 增加方法
-        FormatTools.addMethodWithBestPosition(interfaze, mBatchInsert);
-        logger.debug("itfsw(批量插入插件):" + interfaze.getType().getShortName() + "增加batchInsert方法。");
-
-        // 2. batchInsertSelective
-        FullyQualifiedJavaType selectiveType = new FullyQualifiedJavaType(introspectedTable.getRules().calculateAllFieldsClass().getShortName() + "." + ModelColumnPlugin.ENUM_NAME);
-        Method mBatchInsertSelective = JavaElementGeneratorTools.generateMethod(
-                METHOD_BATCH_INSERT_SELECTIVE,
-                JavaVisibility.DEFAULT,
-                FullyQualifiedJavaType.getIntInstance(),
-                new Parameter(listType, "list", "@Param(\"list\")"),
-                new Parameter(selectiveType, "selective", "@Param(\"selective\")", true)
-        );
-        commentGenerator.addGeneralMethodComment(mBatchInsertSelective, introspectedTable);
-        // interface 增加方法
-        FormatTools.addMethodWithBestPosition(interfaze, mBatchInsertSelective);
-        logger.debug("itfsw(批量插入插件):" + interfaze.getType().getShortName() + "增加batchInsertSelective方法。");
-
-        return true;
-    }
-
     /**
      * SQL Map Methods 生成
      * 具体执行顺序 http://www.mybatis.org/generator/reference/pluggingIn.html
@@ -96,149 +43,140 @@ public class Me365Plugin extends BasePlugin {
      */
     @Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
-        // 1. batchInsert
-        XmlElement batchInsertEle = new XmlElement("insert");
-        batchInsertEle.addAttribute(new Attribute("id", METHOD_BATCH_INSERT));
+        // 1. selectAll
+        XmlElement selectAllEle = new XmlElement("select");
+        selectAllEle.addAttribute(new Attribute("id", "selectAll"));
         // 参数类型
-        batchInsertEle.addAttribute(new Attribute("parameterType", "map"));
+        selectAllEle.addAttribute(new Attribute("resultMap", "BaseResultMap"));
         // 添加注释(!!!必须添加注释，overwrite覆盖生成时，@see XmlFileMergerJaxp.isGeneratedNode会去判断注释中是否存在OLD_ELEMENT_TAGS中的一点，例子：@mbg.generated)
-        commentGenerator.addComment(batchInsertEle);
+        commentGenerator.addComment(selectAllEle);
 
         // 使用JDBC的getGenereatedKeys方法获取主键并赋值到keyProperty设置的领域模型属性中。所以只支持MYSQL和SQLServer
-        XmlElementGeneratorTools.useGeneratedKeys(batchInsertEle, introspectedTable);
+        XmlElementGeneratorTools.useGeneratedKeys(selectAllEle, introspectedTable);
 
-        batchInsertEle.addElement(new TextElement("insert into " + introspectedTable.getFullyQualifiedTableNameAtRuntime()));
-        for (Element element : XmlElementGeneratorTools.generateKeys(ListUtilities.removeIdentityAndGeneratedAlwaysColumns(introspectedTable.getAllColumns()), true)) {
-            batchInsertEle.addElement(element);
-        }
+        selectAllEle.addElement(new TextElement("select <include refid=\"Base_Column_List\"/> from "));
+        selectAllEle.addElement(new TextElement(introspectedTable.getFullyQualifiedTableNameAtRuntime()));
 
-        // 添加foreach节点
-        XmlElement foreachElement = new XmlElement("foreach");
-        foreachElement.addAttribute(new Attribute("collection", "list"));
-        foreachElement.addAttribute(new Attribute("item", "item"));
-        foreachElement.addAttribute(new Attribute("separator", ","));
+        document.getRootElement().addElement(selectAllEle);
+        logger.debug("Me365Plugin插件:" + introspectedTable.getMyBatis3XmlMapperFileName() + "增加selectAll实现方法。");
 
-        for (Element element : XmlElementGeneratorTools.generateValues(ListUtilities.removeIdentityAndGeneratedAlwaysColumns(introspectedTable.getAllColumns()), "item.")) {
-            foreachElement.addElement(element);
-        }
-
-        // values 构建
-        batchInsertEle.addElement(new TextElement("values"));
-        batchInsertEle.addElement(foreachElement);
-        document.getRootElement().addElement(batchInsertEle);
-        logger.debug("itfsw(批量插入插件):" + introspectedTable.getMyBatis3XmlMapperFileName() + "增加batchInsert实现方法。");
-
-        // 2. batchInsertSelective
-        XmlElement batchInsertSelectiveEle = new XmlElement("insert");
-        // 添加注释(!!!必须添加注释，overwrite覆盖生成时，@see XmlFileMergerJaxp.isGeneratedNode会去判断注释中是否存在OLD_ELEMENT_TAGS中的一点，例子：@mbg.generated)
-        commentGenerator.addComment(batchInsertSelectiveEle);
-
-        batchInsertSelectiveEle.addAttribute(new Attribute("id", METHOD_BATCH_INSERT_SELECTIVE));
+        // 2. selectByCondition
+        XmlElement selectByConditionEle = new XmlElement("select");
+        selectByConditionEle.addAttribute(new Attribute("parameterType", "java.lang.String"));
+        selectByConditionEle.addAttribute(new Attribute("id", "selectByCondition"));
         // 参数类型
-        batchInsertSelectiveEle.addAttribute(new Attribute("parameterType", "map"));
+        selectByConditionEle.addAttribute(new Attribute("resultMap", "BaseResultMap"));
+        // 添加注释(!!!必须添加注释，overwrite覆盖生成时，@see XmlFileMergerJaxp.isGeneratedNode会去判断注释中是否存在OLD_ELEMENT_TAGS中的一点，例子：@mbg.generated)
+        commentGenerator.addComment(selectByConditionEle);
 
         // 使用JDBC的getGenereatedKeys方法获取主键并赋值到keyProperty设置的领域模型属性中。所以只支持MYSQL和SQLServer
-        XmlElementGeneratorTools.useGeneratedKeys(batchInsertSelectiveEle, introspectedTable);
+        XmlElementGeneratorTools.useGeneratedKeys(selectByConditionEle, introspectedTable);
 
-        // 支持原生字段非空判断
-        if (this.allowMultiQueries) {
-            XmlElement chooseEle = new XmlElement("choose");
+        selectByConditionEle.addElement(new TextElement("select <include refid=\"Base_Column_List\"/> from "));
+        selectByConditionEle.addElement(new TextElement(introspectedTable.getFullyQualifiedTableNameAtRuntime()));
+        selectByConditionEle.addElement(new TextElement("where ${value}"));
 
-            // selective 增强
-            XmlElement selectiveEnhancedEle = new XmlElement("when");
-            selectiveEnhancedEle.addAttribute(new Attribute("test", "selective != null and selective.length > 0"));
-            chooseEle.addElement(selectiveEnhancedEle);
+        document.getRootElement().addElement(selectByConditionEle);
+        logger.debug("Me365Plugin插件:" + introspectedTable.getMyBatis3XmlMapperFileName() + "增加selectByCondition实现方法。");
 
-            selectiveEnhancedEle.getElements().addAll(this.generateSelectiveEnhancedEles(introspectedTable));
+        // 3. selectMapsByCondition
+        XmlElement selectMapsByConditionEle = new XmlElement("select");
+        selectMapsByConditionEle.addAttribute(new Attribute("parameterType", "java.lang.String"));
+        selectMapsByConditionEle.addAttribute(new Attribute("id", "selectMapsByCondition"));
+        // 参数类型
+        selectMapsByConditionEle.addAttribute(new Attribute("resultType", "java.util.HashMap"));
+        // 添加注释(!!!必须添加注释，overwrite覆盖生成时，@see XmlFileMergerJaxp.isGeneratedNode会去判断注释中是否存在OLD_ELEMENT_TAGS中的一点，例子：@mbg.generated)
+        commentGenerator.addComment(selectMapsByConditionEle);
 
-            // 原生非空判断语句
-            XmlElement selectiveNormalEle = new XmlElement("otherwise");
-            chooseEle.addElement(selectiveNormalEle);
+        // 使用JDBC的getGenereatedKeys方法获取主键并赋值到keyProperty设置的领域模型属性中。所以只支持MYSQL和SQLServer
+        XmlElementGeneratorTools.useGeneratedKeys(selectMapsByConditionEle, introspectedTable);
 
-            XmlElement foreachEle = new XmlElement("foreach");
-            selectiveNormalEle.addElement(foreachEle);
-            foreachEle.addAttribute(new Attribute("collection", "list"));
-            foreachEle.addAttribute(new Attribute("item", "item"));
-            foreachEle.addAttribute(new Attribute("separator", ";"));
+        selectMapsByConditionEle.addElement(new TextElement("select <include refid=\"Base_Column_List\"/>  from "));
+        selectMapsByConditionEle.addElement(new TextElement(introspectedTable.getFullyQualifiedTableNameAtRuntime()));
+        selectMapsByConditionEle.addElement(new TextElement("where ${value}"));
 
+        document.getRootElement().addElement(selectMapsByConditionEle);
+        logger.debug("Me365Plugin插件:" + introspectedTable.getMyBatis3XmlMapperFileName() + "增加selectMapsByCondition实现方法。");
 
-            foreachEle.addElement(new TextElement("insert into " + introspectedTable.getFullyQualifiedTableNameAtRuntime()));
+        // 4. countByCondition
+        XmlElement countByConditionEle = new XmlElement("select");
+        countByConditionEle.addAttribute(new Attribute("parameterType", "java.lang.String"));
+        countByConditionEle.addAttribute(new Attribute("id", "selectMapsByCondition"));
+        // 参数类型
+        countByConditionEle.addAttribute(new Attribute("resultType", "int"));
+        // 添加注释(!!!必须添加注释，overwrite覆盖生成时，@see XmlFileMergerJaxp.isGeneratedNode会去判断注释中是否存在OLD_ELEMENT_TAGS中的一点，例子：@mbg.generated)
+        commentGenerator.addComment(countByConditionEle);
 
-            XmlElement insertTrimElement = new XmlElement("trim");
-            foreachEle.addElement(insertTrimElement);
-            insertTrimElement.addElement(XmlElementGeneratorTools.generateKeysSelective(ListUtilities.removeIdentityAndGeneratedAlwaysColumns(introspectedTable.getAllColumns()), "item."));
+        // 使用JDBC的getGenereatedKeys方法获取主键并赋值到keyProperty设置的领域模型属性中。所以只支持MYSQL和SQLServer
+        XmlElementGeneratorTools.useGeneratedKeys(countByConditionEle, introspectedTable);
 
-            foreachEle.addElement(new TextElement("values"));
-
-            XmlElement valuesTrimElement = new XmlElement("trim");
-            foreachEle.addElement(valuesTrimElement);
-            valuesTrimElement.addElement(XmlElementGeneratorTools.generateValuesSelective(ListUtilities.removeIdentityAndGeneratedAlwaysColumns(introspectedTable.getAllColumns()), "item."));
-
-            batchInsertSelectiveEle.addElement(chooseEle);
-        } else {
-            batchInsertSelectiveEle.getElements().addAll(this.generateSelectiveEnhancedEles(introspectedTable));
+        String keyColumnName = "id";
+        if(introspectedTable.getPrimaryKeyColumns()!=null && introspectedTable.getPrimaryKeyColumns().size()>0){
+            keyColumnName = introspectedTable.getPrimaryKeyColumns().get(0).getActualColumnName();
         }
+        countByConditionEle.addElement(new TextElement("select count("+keyColumnName+")  from "));
+        countByConditionEle.addElement(new TextElement(introspectedTable.getFullyQualifiedTableNameAtRuntime()));
+        countByConditionEle.addElement(new TextElement("where ${value}"));
 
-        document.getRootElement().addElement(batchInsertSelectiveEle);
-        logger.debug("itfsw(批量插入插件):" + introspectedTable.getMyBatis3XmlMapperFileName() + "增加batchInsertSelective实现方法。");
+        document.getRootElement().addElement(countByConditionEle);
+        logger.debug("Me365Plugin插件:" + introspectedTable.getMyBatis3XmlMapperFileName() + "增加countByCondition实现方法。");
+
+        // 5. deleteByCondition
+        XmlElement deleteByConditionEle = new XmlElement("delete");
+        deleteByConditionEle.addAttribute(new Attribute("id", "deleteByCondition"));
+        deleteByConditionEle.addAttribute(new Attribute("parameterType", "java.lang.String"));
+        // 添加注释(!!!必须添加注释，overwrite覆盖生成时，@see XmlFileMergerJaxp.isGeneratedNode会去判断注释中是否存在OLD_ELEMENT_TAGS中的一点，例子：@mbg.generated)
+        commentGenerator.addComment(deleteByConditionEle);
+
+        // 使用JDBC的getGenereatedKeys方法获取主键并赋值到keyProperty设置的领域模型属性中。所以只支持MYSQL和SQLServer
+        XmlElementGeneratorTools.useGeneratedKeys(deleteByConditionEle, introspectedTable);
+
+        deleteByConditionEle.addElement(new TextElement(" delete from  "));
+        deleteByConditionEle.addElement(new TextElement(introspectedTable.getFullyQualifiedTableNameAtRuntime()));
+        deleteByConditionEle.addElement(new TextElement("where ${value}"));
+
+        document.getRootElement().addElement(deleteByConditionEle);
+        logger.debug("Me365Plugin插件:" + introspectedTable.getMyBatis3XmlMapperFileName() + "增加deleteByCondition实现方法。");
+
+        // 6. discardByCondition
+        XmlElement discardByConditionEle = new XmlElement("update");
+        discardByConditionEle.addAttribute(new Attribute("parameterType", "java.lang.String"));
+        discardByConditionEle.addAttribute(new Attribute("id", "discardByCondition"));
+        // 添加注释(!!!必须添加注释，overwrite覆盖生成时，@see XmlFileMergerJaxp.isGeneratedNode会去判断注释中是否存在OLD_ELEMENT_TAGS中的一点，例子：@mbg.generated)
+        commentGenerator.addComment(discardByConditionEle);
+
+        // 使用JDBC的getGenereatedKeys方法获取主键并赋值到keyProperty设置的领域模型属性中。所以只支持MYSQL和SQLServer
+        XmlElementGeneratorTools.useGeneratedKeys(discardByConditionEle, introspectedTable);
+
+        discardByConditionEle.addElement(new TextElement("    update "));
+        discardByConditionEle.addElement(new TextElement(introspectedTable.getFullyQualifiedTableNameAtRuntime()));
+        discardByConditionEle.addElement(new TextElement("set dr = 1"));
+        discardByConditionEle.addElement(new TextElement("where ${value}"));
+
+        document.getRootElement().addElement(discardByConditionEle);
+        logger.debug("Me365Plugin插件:" + introspectedTable.getMyBatis3XmlMapperFileName() + "增加discardByCondition实现方法。");
+
+
+        // 7. discardByPrimaryKey
+        XmlElement discardByPrimaryKeyEle = new XmlElement("update");
+        discardByPrimaryKeyEle.addAttribute(new Attribute("parameterType", "java.lang.String"));
+        discardByPrimaryKeyEle.addAttribute(new Attribute("id", "discardByPrimaryKey"));
+        // 添加注释(!!!必须添加注释，overwrite覆盖生成时，@see XmlFileMergerJaxp.isGeneratedNode会去判断注释中是否存在OLD_ELEMENT_TAGS中的一点，例子：@mbg.generated)
+        commentGenerator.addComment(discardByPrimaryKeyEle);
+
+        // 使用JDBC的getGenereatedKeys方法获取主键并赋值到keyProperty设置的领域模型属性中。所以只支持MYSQL和SQLServer
+        XmlElementGeneratorTools.useGeneratedKeys(discardByPrimaryKeyEle, introspectedTable);
+
+        discardByPrimaryKeyEle.addElement(new TextElement("update "));
+        discardByPrimaryKeyEle.addElement(new TextElement(introspectedTable.getFullyQualifiedTableNameAtRuntime()));
+        discardByPrimaryKeyEle.addElement(new TextElement("set ts = #{ts,jdbcType=CHAR}, dr = #{dr,jdbcType=INTEGER}"));
+
+        discardByPrimaryKeyEle.addElement(new TextElement("where " + keyColumnName+" = #{"+keyColumnName+",jdbcType=CHAR} " ));
+
+        document.getRootElement().addElement(discardByPrimaryKeyEle);
+        logger.debug("Me365Plugin插件:" + introspectedTable.getMyBatis3XmlMapperFileName() + "增加discardByPrimaryKey实现方法。");
 
         return true;
     }
 
-    /**
-     * 生成insert selective 增强的插入语句
-     * @param introspectedTable
-     * @return
-     */
-    private List<Element> generateSelectiveEnhancedEles(IntrospectedTable introspectedTable) {
-        List<Element> eles = new ArrayList<>();
-
-        eles.add(new TextElement("insert into " + introspectedTable.getFullyQualifiedTableNameAtRuntime() + " ("));
-
-        XmlElement foreachInsertColumns = new XmlElement("foreach");
-        foreachInsertColumns.addAttribute(new Attribute("collection", "selective"));
-        foreachInsertColumns.addAttribute(new Attribute("item", "column"));
-        foreachInsertColumns.addAttribute(new Attribute("separator", ","));
-        foreachInsertColumns.addElement(new TextElement("${column.escapedColumnName}"));
-
-        eles.add(foreachInsertColumns);
-
-        eles.add(new TextElement(")"));
-
-        // values
-        eles.add(new TextElement("values"));
-
-        // foreach values
-        XmlElement foreachValues = new XmlElement("foreach");
-        foreachValues.addAttribute(new Attribute("collection", "list"));
-        foreachValues.addAttribute(new Attribute("item", "item"));
-        foreachValues.addAttribute(new Attribute("separator", ","));
-
-        foreachValues.addElement(new TextElement("("));
-
-        // foreach 所有插入的列，比较是否存在
-        XmlElement foreachInsertColumnsCheck = new XmlElement("foreach");
-        foreachInsertColumnsCheck.addAttribute(new Attribute("collection", "selective"));
-        foreachInsertColumnsCheck.addAttribute(new Attribute("item", "column"));
-        foreachInsertColumnsCheck.addAttribute(new Attribute("separator", ","));
-
-        // 所有表字段
-        List<IntrospectedColumn> columns = ListUtilities.removeIdentityAndGeneratedAlwaysColumns(introspectedTable.getAllColumns());
-        List<IntrospectedColumn> columns1 = ListUtilities.removeIdentityAndGeneratedAlwaysColumns(introspectedTable.getAllColumns());
-        for (int i = 0; i < columns1.size(); i++) {
-            IntrospectedColumn introspectedColumn = columns.get(i);
-            XmlElement check = new XmlElement("if");
-            check.addAttribute(new Attribute("test", "'" + introspectedColumn.getActualColumnName() + "'.toString() == column.value"));
-            check.addElement(new TextElement(MyBatis3FormattingUtilities.getParameterClause(introspectedColumn, "item.")));
-
-            foreachInsertColumnsCheck.addElement(check);
-        }
-        foreachValues.addElement(foreachInsertColumnsCheck);
-
-        foreachValues.addElement(new TextElement(")"));
-
-        eles.add(foreachValues);
-
-        return eles;
-    }
 }

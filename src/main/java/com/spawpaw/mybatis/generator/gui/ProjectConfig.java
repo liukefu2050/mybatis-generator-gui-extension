@@ -102,7 +102,7 @@ public class ProjectConfig {
     @AdvancedConfig
     @Config(bundle = "plugin.logicalDeletePlugin.logicalDeleteColumn", type = ConfigType.TextField)
     @ExportToPlugin(plugin = DeclaredPlugins.LogicalDeletePlugin)
-    public StringProperty logicalDeleteColumn = new SimpleStringProperty("IS_DELETE"); // 逻辑删除列
+    public StringProperty logicalDeleteColumn = new SimpleStringProperty("dr"); // 逻辑删除列
     @AdvancedConfig
     @Config(bundle = "plugin.logicalDeletePlugin.logicalDeleteValue", type = ConfigType.TextField)
     @ExportToPlugin(plugin = DeclaredPlugins.LogicalDeletePlugin)
@@ -191,7 +191,7 @@ public class ProjectConfig {
     /****Entity层配置***************************************************************************************************/
     @ExportToTab(tabName = DOMAIN_OBJECT, index = 1)
     @Config(bundle = "project.defaultModelType", type = ConfigType.ChoiceBox, testRegex = "conditional|flat|hierarchical")
-    public StringProperty defaultModelType = new SimpleStringProperty("hierarchical");
+    public StringProperty defaultModelType = new SimpleStringProperty("conditional");
     @ExportToPlugin(plugin = DeclaredPlugins.SCVXGeneratorPlugin)
     @Config(bundle = "project.entityDir", type = ConfigType.TextField)
     public SimpleStringProperty entityDir = new SimpleStringProperty("src/main/java");
