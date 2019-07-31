@@ -30,5 +30,6 @@ public class DeclaredPlugins {
     public static final String CommentPlugin = "com.spawpaw.mybatis.generator.gui.plugin.CommentPlugin";
     public static final String PagePlugin = "com.spawpaw.mybatis.generator.gui.plugin.PagePlugin";
     public static final String SCVXGeneratorPlugin = "com.spawpaw.mybatis.generator.gui.plugin.SCVXGeneratorPlugin";
+    public static final String DeleteAliasedTableBugFixPlugin = "com.spawpaw.mybatis.generator.gui.plugin.DeleteAliasedTableBugFixPlugin";
     public static final String Me365Plugin = "com.spawpaw.mybatis.generator.gui.plugin.Me365Plugin";
 }

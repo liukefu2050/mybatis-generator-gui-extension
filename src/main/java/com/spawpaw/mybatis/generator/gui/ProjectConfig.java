@@ -83,6 +83,9 @@ public class ProjectConfig {
     public SimpleStringProperty daoObjName = new SimpleStringProperty("");
     @ExportToTab(tabName = DATA_ACCESS_OBJECT, index = 1)
     @ExportToTab(tabName = SHORTCUT, index = 1)
+    @Config(bundle = "project.tableAlias", type = ConfigType.TextField)
+    @AdvancedConfig
+    public SimpleStringProperty tableAlias = new SimpleStringProperty("");
     @Config(bundle = "project.autoDelimitKeywords", testRegex = "\n`\n\"", type = ConfigType.ComboBox)
     public SimpleStringProperty autoDelimitKeywords = new SimpleStringProperty("");
     @ExportToTab(tabName = SHORTCUT, index = 2)
@@ -97,6 +100,15 @@ public class ProjectConfig {
     @EnablePlugin(DeclaredPlugins.LogicalDeletePlugin)
     @Config(bundle = "plugin.logicalDeletePlugin.enableLogicDeletePlugin", type = ConfigType.CheckBox)
     public BooleanProperty enableLogicDeletePlugin = new SimpleBooleanProperty(false); // 逻辑删除列
+
+    @ExportToTab(tabName = DATA_ACCESS_OBJECT, index = 1)
+    @ExportToTab(tabName = SHORTCUT, index = 2)
+    @EnablePlugin(DeclaredPlugins.DeleteAliasedTableBugFixPlugin)
+    @ExportToPlugin(plugin = DeclaredPlugins.DeleteAliasedTableBugFixPlugin, key = "fixType")
+    @Config(bundle = "project.deleteAliasedTableBugFixPlugin", type = ConfigType.ChoiceBox, testRegex = "DONT_FIX|DELETE_ALIAS_FROM_TABLE_ALIAS|DELETE_FROM_TABLE")
+    public SimpleStringProperty fixMySQLAliasBug = new SimpleStringProperty("DONT_FIX");
+
+    public boolean selectedDatabaseDoesNotSupportAlias = false;
 
     @ExportToTab(tabName = DATA_ACCESS_OBJECT, index = 1)
     @AdvancedConfig
@@ -312,24 +324,24 @@ public class ProjectConfig {
     @Config(bundle = "project.scvxGenerator.configYml", type = ConfigType.TextArea)
     public StringProperty scvxConfigYml = new SimpleStringProperty(
             "templateConfig:\n" +
-            "\n" +
-            "  # REST-ful Controller\n" +
-            "  - template: java/restController.vm\n" +
-            "    destDir: src/main/java\n" +
-            "    destPackage: ${basePackage}.controller\n" +
-            "    destFileName: ${entityName}RestController.java\n" +
-            "\n" +
-            "  # 生成html表单\n" +
-            "  - template: html/index.vm\n" +
-            "    destDir: src/main/resources\n" +
-            "    destPackage: templates\n" +
-            "    destFileName: index.html\n" +
-            "\n" +
-            "  # 生成html列表\n" +
-            "  - template: html/list.vm\n" +
-            "    destDir: src/main/resources\n" +
-            "    destPackage: templates\n" +
-            "    destFileName: list.html\n");
+                    "\n" +
+                    "  # REST-ful Controller\n" +
+                    "  - template: java/restController.vm\n" +
+                    "    destDir: src/main/java\n" +
+                    "    destPackage: ${basePackage}.controller\n" +
+                    "    destFileName: ${entityName}RestController.java\n" +
+                    "\n" +
+                    "  # 生成html表单\n" +
+                    "  - template: html/index.vm\n" +
+                    "    destDir: src/main/resources\n" +
+                    "    destPackage: templates\n" +
+                    "    destFileName: index.html\n" +
+                    "\n" +
+                    "  # 生成html列表\n" +
+                    "  - template: html/list.vm\n" +
+                    "    destDir: src/main/resources\n" +
+                    "    destPackage: templates\n" +
+                    "    destFileName: list.html\n");
 
     /*===方法s========================================================================================================*/
 
@@ -366,6 +378,15 @@ public class ProjectConfig {
             if (newValue) {
                 enableModelColumnPlugin.setValue(true);
                 enableExampleEnhancedPlugin.setValue(true);
+            }
+        });
+        tableAlias.addListener((observable, oldValue, newValue) -> {
+            if (!newValue.isEmpty()) {
+                if (selectedDatabaseDoesNotSupportAlias && "DONT_FIX".equalsIgnoreCase(fixMySQLAliasBug.getValue())) {
+                    fixMySQLAliasBug.setValue("DELETE_ALIAS_FROM_TABLE_ALIAS");
+                }
+            } else {
+                fixMySQLAliasBug.setValue("DONT_FIX");
             }
         });
     }
