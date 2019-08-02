@@ -1,0 +1,61 @@
+package amy.mes.mat.ctrl;
+
+import amy.common.utils.StringUtil;
+import amy.mes.mat.intf.IMaterialService;
+import amy.mes.mat.intf.dto.QueryMaterialDTO;
+import amy.mes.mat.vo.MaterialVo;
+import amy.mes.user.intf.IUserService;
+import amy.mes.user.intf.dto.UserDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+
+@Controller
+@Scope("prototype")
+@RequestMapping({"/material"})
+public class MaterialController {
+
+  @Autowired
+  private IUserService userService;
+  @Autowired
+  private IMaterialService materialService;
+
+  @RequestMapping("/list")
+  @ResponseBody
+  public String list(QueryMaterialDTO dto) {
+    return materialService.queryList(dto);
+  }
+
+  @RequestMapping("/{pk}/query")
+  @ResponseBody
+  public String query(@PathVariable String pk) {
+    return materialService.queryByPk(pk);
+  }
+
+  @RequestMapping("/{pk}/delete")
+  @ResponseBody
+  public String delete(@PathVariable String pk) {
+    UserDTO currentUser = userService.getCurrentUser();
+    MaterialVo vo = new MaterialVo();
+    vo.setPk(pk);
+    vo.setPk_updator(currentUser.getPk_user());
+    return materialService.deleteByPk(vo);
+  }
+
+  @RequestMapping("/save")
+  @ResponseBody
+  public String save(@RequestBody MaterialVo vo) {
+    UserDTO currentUser = userService.getCurrentUser();
+    if (StringUtil.isNotBlank(vo.getPk())) {
+      vo.setPk_creator(currentUser.getPk_user());
+    }
+    vo.setPk_updator(currentUser.getPk_user());
+    return materialService.save(vo);
+  }
+
+}

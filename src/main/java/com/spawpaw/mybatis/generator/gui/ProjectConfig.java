@@ -47,7 +47,7 @@ public class ProjectConfig {
     public SimpleStringProperty daoPackageSuffix = new SimpleStringProperty("dao");
     @AdvancedConfig
     @Config(bundle = "project.entityObjSuffix")
-    public SimpleStringProperty entityObjSuffix = new SimpleStringProperty("");
+    public SimpleStringProperty entityObjSuffix = new SimpleStringProperty("Vo");
     @AdvancedConfig
     @Config(bundle = "project.exampleObjSuffix")
     public SimpleStringProperty exampleObjSuffix = new SimpleStringProperty("BizVo");
@@ -176,7 +176,7 @@ public class ProjectConfig {
     public SimpleBooleanProperty enableSelectByPrimaryKey = new SimpleBooleanProperty(true);
     @AdvancedConfig
     @Config(bundle = "project.enableSelectByExample", type = ConfigType.CheckBox)
-    public SimpleBooleanProperty enableSelectByExample = new SimpleBooleanProperty(false);
+    public SimpleBooleanProperty enableSelectByExample = new SimpleBooleanProperty(true);
     @AdvancedConfig
     @Config(bundle = "project.enableUpdateByPrimaryKey", type = ConfigType.CheckBox)
     public SimpleBooleanProperty enableUpdateByPrimaryKey = new SimpleBooleanProperty(true);

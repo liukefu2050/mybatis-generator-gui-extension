@@ -1,0 +1,12 @@
+package amy.mes.mat.dao;
+
+import amy.common.basic.dao.IBasicDAO;
+import amy.common.basic.dao.MyBatisDao;
+import amy.mes.mat.vo.MaterialVo;
+import org.springframework.stereotype.Repository;
+
+@MyBatisDao
+@Repository("MaterialDao")
+public interface MaterialDao extends IBasicDAO<MaterialVo> {
+
+}

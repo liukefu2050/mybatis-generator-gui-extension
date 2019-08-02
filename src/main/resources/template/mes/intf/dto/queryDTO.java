@@ -1,0 +1,66 @@
+package amy.mes.mat.intf.dto;
+
+import amy.common.basic.dto.BasicQueryParams;
+
+public class QueryMaterialDTO extends BasicQueryParams {
+    /**
+     * 搜索关键字
+     */
+    private String searchKey;
+    /**
+     * 类型
+     */
+    private String type;
+    /**
+     * 开始时间
+     */
+    private String start_date;
+    /**
+     * 结束时间
+     */
+    private String end_date;
+    /**
+     * 排序SQL
+     */
+    private String order_sql;
+
+    public String getSearchKey() {
+        return searchKey;
+    }
+
+    public void setSearchKey(String searchKey) {
+        this.searchKey = searchKey;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getStart_date() {
+        return start_date;
+    }
+
+    public void setStart_date(String start_date) {
+        this.start_date = start_date;
+    }
+
+    public String getEnd_date() {
+        return end_date;
+    }
+
+    public void setEnd_date(String end_date) {
+        this.end_date = end_date;
+    }
+
+    public String getOrder_sql() {
+        return order_sql;
+    }
+
+    public void setOrder_sql(String order_sql) {
+        this.order_sql = order_sql;
+    }
+}
