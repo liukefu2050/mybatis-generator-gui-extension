@@ -14,6 +14,10 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ${table.basePackage}.intf.I${table.entityBaseName}Service;
+import ${table.basePackage}.intf.dto.Query${table.entityBaseName}DTO;
+import ${table.basePackage}.vo.${table.entityBaseName}Vo;
+
 import java.util.Date;
 import java.util.List;
 
@@ -33,10 +37,10 @@ public class ${table.entityBaseName}ServiceImpl implements I${table.entityBaseNa
             if (null == dto) {
                 throw ExFactory.getInstance().getBusinessEx("NULL", "MES-000001");
             }
-            PageCst<${table.basePackage}.vo.${table.entityBaseName}Vo> datas = PageCst.setPage(dto);
+            PageCst<${table.entityBaseName}Vo> datas = PageCst.setPage(dto);
             String whereSql = queryListCoundtion(dto);
 
-            List<${table.basePackage}.vo.${table.entityBaseName}Vo> dtoList = null;
+            List<${table.entityBaseName}Vo> dtoList = null;
             if (dto.getIsCount()) {
                 PageHelper.startPage(datas.getPageNo().intValue(), datas.getPageSize().intValue(),
                         datas.getIsCount().booleanValue());
@@ -49,6 +53,10 @@ public class ${table.entityBaseName}ServiceImpl implements I${table.entityBaseNa
                 datas.setTotal(Long.valueOf(dtoList.size()));
             }
             datas.setResult(dtoList);
+
+            rdto.setExecResult(true);
+            rdto.setExecMsg("");
+            rdto.setExecDatas(datas);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e);
