@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,9 +75,13 @@ public class GenerationProgressController extends BaseController {
                     synchronized (selectedProjectConfig) {
                         selectedProjectConfig.selectedTable.set(t);
                     }
-                    String warnings = new MBGRunner(selectedProjectConfig, selectedDatabaseConfig).generate();
-                    if (!warnings.isEmpty())
-                        appendMsg("warning: \n" + warnings);
+
+                    if(StringUtils.isBlank(selectedProjectConfig.reduceTablePrefix.getValue())
+                            || t.startsWith(selectedProjectConfig.reduceTablePrefix.getValue())){
+                        String warnings = new MBGRunner(selectedProjectConfig, selectedDatabaseConfig).generate();
+                        if (!warnings.isEmpty())
+                            appendMsg("warning: \n" + warnings);
+                    }
                 }
             } else {
                 appendMsg(new MBGRunner(selectedProjectConfig, selectedDatabaseConfig).generate());
