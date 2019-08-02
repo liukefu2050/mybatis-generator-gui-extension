@@ -1,12 +1,12 @@
-package amy.mes.mat.dao;
+package ${table.basePackage}.dao;
 
 import amy.common.basic.dao.IBasicDAO;
 import amy.common.basic.dao.MyBatisDao;
-import amy.mes.mat.vo.MaterialVo;
+import ${table.basePackage}.vo.${table.entityBaseName}Vo;
 import org.springframework.stereotype.Repository;
 
 @MyBatisDao
-@Repository("MaterialDao")
-public interface MaterialDao extends IBasicDAO<MaterialVo> {
+@Repository("${table.entityBaseName}Dao")
+public interface ${table.entityBaseName}Dao extends IBasicDAO<${table.entityBaseName}Vo> {
 
 }

@@ -1,9 +1,9 @@
-package amy.mes.mat.ctrl;
+package ${table.basePackage}.ctrl;
 
 import amy.common.utils.StringUtil;
-import amy.mes.mat.intf.IMaterialService;
-import amy.mes.mat.intf.dto.QueryMaterialDTO;
-import amy.mes.mat.vo.MaterialVo;
+import ${table.basePackage}.intf.I${table.entityBaseName}Service;
+import ${table.basePackage}.intf.dto.Query${table.entityBaseName}DTO;
+import ${table.basePackage}.vo.${table.entityBaseName}Vo;
 import amy.mes.user.intf.IUserService;
 import amy.mes.user.intf.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,45 +17,45 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @Scope("prototype")
-@RequestMapping({"/material"})
-public class MaterialController {
+@RequestMapping({"/${table.entityLowerBaseName}"})
+public class ${table.entityBaseName}Controller {
 
   @Autowired
   private IUserService userService;
   @Autowired
-  private IMaterialService materialService;
+  private I${table.entityBaseName}Service ${table.entityLowerBaseName}Service;
 
   @RequestMapping("/list")
   @ResponseBody
-  public String list(QueryMaterialDTO dto) {
-    return materialService.queryList(dto);
+  public String list(Query${table.entityBaseName}DTO dto) {
+    return ${table.entityLowerBaseName}Service.queryList(dto);
   }
 
   @RequestMapping("/{pk}/query")
   @ResponseBody
   public String query(@PathVariable String pk) {
-    return materialService.queryByPk(pk);
+    return ${table.entityLowerBaseName}Service.queryByPk(pk);
   }
 
   @RequestMapping("/{pk}/delete")
   @ResponseBody
   public String delete(@PathVariable String pk) {
     UserDTO currentUser = userService.getCurrentUser();
-    MaterialVo vo = new MaterialVo();
+    ${table.entityBaseName}Vo vo = new ${table.entityBaseName}Vo();
     vo.setPk(pk);
     vo.setPk_updator(currentUser.getPk_user());
-    return materialService.deleteByPk(vo);
+    return ${table.entityLowerBaseName}Service.deleteByPk(vo);
   }
 
   @RequestMapping("/save")
   @ResponseBody
-  public String save(@RequestBody MaterialVo vo) {
+  public String save(@RequestBody ${table.entityBaseName}Vo vo) {
     UserDTO currentUser = userService.getCurrentUser();
     if (StringUtil.isNotBlank(vo.getPk())) {
       vo.setPk_creator(currentUser.getPk_user());
     }
     vo.setPk_updator(currentUser.getPk_user());
-    return materialService.save(vo);
+    return ${table.entityLowerBaseName}Service.save(vo);
   }
 
 }

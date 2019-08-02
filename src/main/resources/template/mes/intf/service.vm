@@ -1,0 +1,16 @@
+package ${table.basePackage}.intf;
+
+
+import ${table.basePackage}.intf.dto.Query${table.entityBaseName}DTO;
+import ${table.basePackage}.vo.${table.entityBaseName}Vo;
+
+public interface I${table.entityBaseName}Service {
+
+  String queryList(Query${table.entityBaseName}DTO dto);
+
+  String deleteByPk(${table.entityBaseName}Vo vo);
+
+  String queryByPk(String pk);
+
+  String save(${table.entityBaseName}Vo vo);
+}

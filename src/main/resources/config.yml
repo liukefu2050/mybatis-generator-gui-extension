@@ -12,7 +12,7 @@ templateConfig:
   # 传统Controller层
   - template: mes/ctrl/controller.vm
     destDir: src/main/java
-    destPackage: ${basePackage}.controller
+    destPackage: ${basePackage}.ctrl
     destFileName: ${entityName}Controller.java
 
   # dao层
@@ -20,3 +20,22 @@ templateConfig:
     destDir: src/main/java
     destPackage: ${basePackage}.dao
     destFileName: ${entityName}Dao.java
+
+  # dto
+  - template: mes/intf/dto/queryDTO.vm
+    destDir: src/main/java
+    destPackage: ${basePackage}.intf.dto
+    destFileName: Query${entityName}DTO.java
+
+
+  # service
+  - template: mes/intf/service.vm
+    destDir: src/main/java
+    destPackage: ${basePackage}.intf
+    destFileName: I${entityName}Service.java
+
+  # service
+  - template: mes/intf/impl/serviceImpl.vm
+    destDir: src/main/java
+    destPackage: ${basePackage}.intf.impl
+    destFileName: ${entityName}ServiceImpl.java

@@ -75,8 +75,8 @@ public class SCVXGeneratorPlugin extends PluginAdapter {
                     + "/"
                     + destFileName;
             absPath = absPath.replace("//", "/");
-            absPath = absPath.replace("${entityName}", table.getEntityName());
-            absPath = absPath.replace("${entityLowerCamel}", table.getEntityLowerCamel());
+            absPath = absPath.replace("${entityName}", table.getEntityBaseName());
+            absPath = absPath.replace("${entityLowerCamel}", table.getEntityLowerBaseName());
             absPath = absPath.replace("${basePackage}", basePackage.replace(".", "/"));
             log.info("generate file `{}` from template `{}`", absPath, template);
 

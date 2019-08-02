@@ -224,7 +224,7 @@ public class ProjectConfig {
     @Config(bundle = "project.exampleObjName", type = ConfigType.TextField)
     public SimpleStringProperty exampleObjName = new SimpleStringProperty("");
     @Config(bundle = "project.entityRootClass", type = ConfigType.CheckableTextField)
-    public SimpleStringProperty entityRootClass = new SimpleStringProperty("nbt.wfw.core.vo.BizBasicVO");
+    public SimpleStringProperty entityRootClass = new SimpleStringProperty("");
     @ExportToPlugin(plugin = DeclaredPlugins.SCVXGeneratorPlugin)
     @Config(bundle = "project.primaryKey", type = ConfigType.CheckableTextField)
     public SimpleStringProperty primaryKey = new SimpleStringProperty("");

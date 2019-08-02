@@ -1,8 +1,8 @@
-package amy.mes.mat.intf.dto;
+package ${table.basePackage}.intf.dto;
 
 import amy.common.basic.dto.BasicQueryParams;
 
-public class QueryMaterialDTO extends BasicQueryParams {
+public class Query${table.entityBaseName}DTO extends BasicQueryParams {
     /**
      * 搜索关键字
      */
