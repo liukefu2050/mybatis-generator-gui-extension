@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import ${table.basePackage}.intf.I${table.entityBaseName}Service;
 import ${table.basePackage}.intf.dto.Query${table.entityBaseName}DTO;
 import ${table.basePackage}.vo.${table.entityBaseName}Vo;
+import ${table.basePackage}.dao.${table.entityBaseName}Dao;
 
 import java.util.Date;
 import java.util.List;
@@ -27,9 +28,9 @@ public class ${table.entityBaseName}ServiceImpl implements I${table.entityBaseNa
 
     private ILogger logger = LogFactory.getLog(${table.entityBaseName}ServiceImpl.class);
     @Autowired
-    private ${table.basePackage}.dao.${table.entityBaseName}Dao ${table.entityLowerBaseName}Dao;
+    private ${table.entityBaseName}Dao ${table.entityLowerBaseName}Dao;
 
-    public String queryList(${table.basePackage}.intf.dto.Query${table.entityBaseName}DTO dto) {
+    public String queryList(Query${table.entityBaseName}DTO dto) {
         String retJsonParam = null;
         ReqResultDTO rdto = new ReqResultDTO();
 
@@ -200,5 +201,38 @@ public class ${table.entityBaseName}ServiceImpl implements I${table.entityBaseNa
         return JsonUtils.toJsonStr(rdto);
     }
 
+    public List<${table.entityBaseName}Vo> queryListBean(Query${table.entityBaseName}DTO dto) {
+        try {
+        if (null == dto) {
+        throw ExFactory.getInstance().getBusinessEx("NULL", "MES-000001");
+        }
+        String whereSql = queryListCoundtion(dto);
+
+        return this.${table.entityLowerBaseName}Dao.selectByCondition(whereSql);
+
+        } catch (Exception e) {
+        e.printStackTrace();
+        logger.error(e);
+        }
+
+        return null;
+     }
+
+     public ${table.entityBaseName}Vo queryBeanByPk(String pk) {
+
+           try {
+                if (StringUtil.isBlank(pk)) {
+                    throw ExFactory.getInstance().getBusinessEx("NULL", "CRM-000001");
+                }
+
+               ${table.entityBaseName}Vo vo = this.${table.entityLowerBaseName}Dao.selectByPrimaryKey(pk);
+
+                return vo;
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error(e);
+            }
+            return null;
+     }
 
 }

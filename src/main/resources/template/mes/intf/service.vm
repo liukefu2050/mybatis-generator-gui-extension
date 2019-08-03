@@ -3,6 +3,7 @@ package ${table.basePackage}.intf;
 
 import ${table.basePackage}.intf.dto.Query${table.entityBaseName}DTO;
 import ${table.basePackage}.vo.${table.entityBaseName}Vo;
+import java.util.List;
 
 public interface I${table.entityBaseName}Service {
 
@@ -13,4 +14,8 @@ public interface I${table.entityBaseName}Service {
   String queryByPk(String pk);
 
   String save(${table.entityBaseName}Vo vo);
+
+  List<${table.entityBaseName}Vo> queryListBean(Query${table.entityBaseName}DTO dto);
+
+  ${table.entityBaseName}Vo queryBeanByPk(String pk);
 }
