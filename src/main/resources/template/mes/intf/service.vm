@@ -11,6 +11,8 @@ public interface I${table.entityBaseName}Service {
 
   String deleteByPk(${table.entityBaseName}Vo vo);
 
+  String batchDelete(List<String> pk_customers,String pk_user);
+
   String queryByPk(String pk);
 
   String save(${table.entityBaseName}Vo vo);

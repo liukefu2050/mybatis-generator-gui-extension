@@ -21,7 +21,9 @@ import ${table.basePackage}.dao.${table.entityBaseName}Dao;
 
 import java.util.Date;
 import java.util.List;
-
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 @Service
 public class ${table.entityBaseName}ServiceImpl implements I${table.entityBaseName}Service {
@@ -161,6 +163,42 @@ public class ${table.entityBaseName}ServiceImpl implements I${table.entityBaseNa
 
         retJsonParam = JsonUtils.toJsonStr(rdto);
         return retJsonParam;
+    }
+
+    public String batchDelete(List<String> pks,String pk_user) {
+            String retJsonParam = null;
+            ReqResultDTO rdto = new ReqResultDTO();
+
+            try{
+                if (StringUtil.isBlank(pk_user)) {
+                    return rtnReqResultStr(rdto, "操作人不能为空");
+                }
+
+                if (CollectionUtils.isEmpty(pks)) {
+                    return rtnReqResultStr(rdto, "至少选择一个要删除的对象");
+                }
+                Map<String, Object> mapParams = new HashMap<>();
+                mapParams.put("pk_user",pk_user);
+                mapParams.put("pk_list", pks);
+
+                int count = this.${table.entityLowerBaseName}Dao.batchDiscard(mapParams);
+                if (count > 0) {
+                    rdto.setExecResult(true);
+                    rdto.setExecMsg("");
+                }else{
+                    rdto.setExecResult(false);
+                    rdto.setExecMsg("删除失败！");
+                }
+            } catch (Exception e){
+                e.printStackTrace();
+                logger.error(e);
+                rdto.setExecResult(false);
+                rdto.setExecMsg("批量删除信息异常！");
+                rdto.setExecErrCode(ExFactory.getExSeat());
+            }
+
+            retJsonParam = JsonUtils.toJsonStr(rdto);
+            return retJsonParam;
     }
 
     public String queryByPk(String pk) {

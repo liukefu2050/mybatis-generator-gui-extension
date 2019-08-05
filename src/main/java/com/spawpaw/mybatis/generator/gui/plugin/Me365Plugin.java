@@ -178,6 +178,28 @@ public class Me365Plugin extends BasePlugin {
         document.getRootElement().addElement(discardByPrimaryKeyEle);
         logger.debug("Me365Plugin插件:" + introspectedTable.getMyBatis3XmlMapperFileName() + "增加discardByPrimaryKey实现方法。");
 
+        // 8. batchDiscard
+        XmlElement batchDiscardEle = new XmlElement("update");
+        batchDiscardEle.addAttribute(new Attribute("parameterType", "java.lang.String"));
+        batchDiscardEle.addAttribute(new Attribute("id", "batchDiscard"));
+        // 添加注释(!!!必须添加注释，overwrite覆盖生成时，@see XmlFileMergerJaxp.isGeneratedNode会去判断注释中是否存在OLD_ELEMENT_TAGS中的一点，例子：@mbg.generated)
+        commentGenerator.addComment(batchDiscardEle);
+
+        // 使用JDBC的getGenereatedKeys方法获取主键并赋值到keyProperty设置的领域模型属性中。所以只支持MYSQL和SQLServer
+        XmlElementGeneratorTools.useGeneratedKeys(batchDiscardEle, introspectedTable);
+
+        batchDiscardEle.addElement(new TextElement("update "));
+        batchDiscardEle.addElement(new TextElement(introspectedTable.getFullyQualifiedTableNameAtRuntime()));
+        batchDiscardEle.addElement(new TextElement("set ts = #{ts,jdbcType=CHAR}, dr = #{dr,jdbcType=INTEGER}, pk_updator = #{pk_user,jdbcType=CHAR}"));
+
+        batchDiscardEle.addElement(new TextElement("where " + keyColumnName+" in  " ));
+        batchDiscardEle.addElement(new TextElement(" <foreach collection=\"pk_list\" item=\"obj\" index=\"index\" open=\"(\" separator=\",\" close=\")\" >  " ));
+        batchDiscardEle.addElement(new TextElement(" #{obj} " ));
+        batchDiscardEle.addElement(new TextElement(" </foreach> " ));
+
+        document.getRootElement().addElement(batchDiscardEle);
+        logger.debug("Me365Plugin插件:" + introspectedTable.getMyBatis3XmlMapperFileName() + "增加batchDiscard实现方法。");
+
         return true;
     }
 
