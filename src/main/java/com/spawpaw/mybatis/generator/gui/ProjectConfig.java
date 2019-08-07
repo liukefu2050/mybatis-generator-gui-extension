@@ -151,7 +151,7 @@ public class ProjectConfig {
     @ExportToTab(tabName = SHORTCUT, index = 2)
     @EnablePlugin(DeclaredPlugins.BatchInsertPlugin)
     @Config(bundle = "project.enableBatchInsertPlugin", type = ConfigType.CheckBox)
-    public SimpleBooleanProperty enableBatchInsertPlugin = new SimpleBooleanProperty(false);
+    public SimpleBooleanProperty enableBatchInsertPlugin = new SimpleBooleanProperty(true);
 
 
     @ExportToTab(tabName = DATA_ACCESS_OBJECT, index = 1)
